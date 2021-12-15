@@ -4,6 +4,7 @@
   "description": "A single-page app that takes a user through a series of forms that simulate a shopping cart checkout experience.",
   "main": "index.js",
   "scripts": {
+    "start:server": "nodemon server.js",
     "transpile": "npx babel client --out-dir=compiled --presets=@babel/preset-react --ignore=node_modules,compiled --source-maps=inline -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
