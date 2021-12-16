@@ -108,15 +108,20 @@ class App extends React.Component {
 
   handleAccountCreation(event) {
     event.preventDefault();
-    let info = {
+    let user = {
       username: event.target.username.value,
       pass: event.target.pass.value,
       email: event.target.email.value
     }
-    axios.post('/', info);
-    // this.setState( (curState) => {
-    //   return {current: 'shipping'};
-    // });
+    axios.post('/users', user)
+      .then( (result) => {
+        return this.setState( (curState) => {
+          return {current: 'shipping'};
+        });
+      })
+      .catch( (error) => {
+        console.log(error);
+      });
   };
 
   handleShipping(event) {
