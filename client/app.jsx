@@ -1,5 +1,4 @@
 
-
 const CheckOut = (props) => {
   return (
     <button className="checkout" onClick={props.task}>Check Out</button>
@@ -31,7 +30,7 @@ const Info = (props) => {
 
 const ShippingInfo = (props) => {
   return (
-    <form className="shippingForm">
+    <form className="shippingForm" onSubmit={props.task}>
       <h1 className="shippingText">Shipping Address</h1>
       <div className="address1">
         <label htmlFor="address1">Address 1 </label>
@@ -60,6 +59,33 @@ const ShippingInfo = (props) => {
   );
 };
 
+const BillingInfo = (props) => {
+  return (
+    <form className="billingForm" onSubmit={props.task}>
+    <h1 className="billingText">Billing Information</h1>
+    <div className="cardNumber">
+      <label htmlFor="cardNumber">Credit Card # </label>
+      <input type="text" name="cardNumber" required></input>
+    </div>
+    <div className="expDate">
+      <label htmlFor="expDate">Expiry Date </label>
+      <input type="text" name="expDate" placeholder="month/year" required></input>
+    </div>
+    <div className="CVV">
+      <label htmlFor="CVV">CVV </label>
+      <input type="text" name="CVV" placeholder="3 digits on back" required></input>
+    </div>
+    <div className="billingZip">
+      <label htmlFor="billingZip">Zip Code </label>
+      <input type="text" name="billingZip" required></input>
+    </div>
+    <div className="submit">
+      <input type="submit" value="Purchase"></input>
+    </div>
+  </form>
+  )
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -68,7 +94,9 @@ class App extends React.Component {
       current: 'checkout'
     };
 
+    this.handleBilling = this.handleBilling.bind(this);
     this.handleCheckOut = this.handleCheckOut.bind(this);
+    this.handleShipping = this.handleShipping.bind(this);
     this.handleAccountCreation = this.handleAccountCreation.bind(this);
   }
 
@@ -85,13 +113,27 @@ class App extends React.Component {
     });
   };
 
+  handleShipping(event) {
+    event.preventDefault();
+    this.setState( (curState) => {
+      return {current: 'billing'};
+    });
+  }
+
+  handleBilling(event) {
+    event.preventDefault();
+    console.log('purchase');
+  }
+
   render() {
     return (
       <div>
         {this.state.current === 'info' ?
         <Info task={this.handleAccountCreation} /> :
         this.state.current === 'shipping' ?
-        <ShippingInfo /> :
+        <ShippingInfo task={this.handleShipping} /> :
+        this.state.current === 'billing' ?
+        <BillingInfo task={this.handleBilling} /> :
         <CheckOut task={this.handleCheckOut} />
         }
       </div>
