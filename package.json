@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:server": "nodemon server.js",
-    "transpile": "npx babel client --out-dir=compiled --presets=@babel/preset-react --ignore=node_modules,compiled --source-maps=inline -w",
+    "transpile": "npx babel client --out-dir=compiled --presets=@babel/preset-react --source-maps=inline -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +25,8 @@
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.5",
-    "@babel/preset-react": "^7.16.5"
+    "@babel/preset-react": "^7.16.5",
+    "body-parser": "^1.19.1",
+    "mysql2": "^2.3.3"
   }
 }
