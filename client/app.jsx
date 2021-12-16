@@ -71,9 +71,9 @@ const BillingInfo = (props) => {
       <label htmlFor="expDate">Expiry Date </label>
       <input type="text" name="expDate" placeholder="month/year" required></input>
     </div>
-    <div className="CVV">
-      <label htmlFor="CVV">CVV </label>
-      <input type="text" name="CVV" placeholder="3 digits on back" required></input>
+    <div className="cvv">
+      <label htmlFor="cvv">CVV </label>
+      <input type="text" name="cvv" placeholder="3 digits on back" required></input>
     </div>
     <div className="billingZip">
       <label htmlFor="billingZip">Zip Code </label>
@@ -91,7 +91,8 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      current: 'checkout'
+      currentPage: 'checkout',
+      currentUser: 0
     };
 
     this.handleBilling = this.handleBilling.bind(this);
@@ -102,7 +103,7 @@ class App extends React.Component {
 
   handleCheckOut(event) {
     this.setState( (curState) => {
-      return {current: 'info'};
+      return {currentPage: 'info'};
     });
   }
 
@@ -112,38 +113,67 @@ class App extends React.Component {
       username: event.target.username.value,
       pass: event.target.pass.value,
       email: event.target.email.value
-    }
+    };
     axios.post('/users', user)
       .then( (result) => {
         return this.setState( (curState) => {
-          return {current: 'shipping'};
+          return {currentPage: 'shipping', currentUser: result.data.insertId};
         });
       })
       .catch( (error) => {
-        console.log(error);
+        console.error('USER ERROR', error);
       });
   };
 
   handleShipping(event) {
     event.preventDefault();
-    this.setState( (curState) => {
-      return {current: 'billing'};
-    });
+    let shipInfo = {
+      address1: event.target.address1.value,
+      address2: event.target.address2.value,
+      city: event.target.city.value,
+      state: event.target.state.value,
+      zip: parseInt(event.target.zip.value),
+      user_id: this.state.currentUser
+    };
+    axios.post('/shipping', shipInfo)
+      .then( (result) => {
+        return this.setState( (curState) => {
+          return {currentPage: 'billing'};
+        });
+      })
+      .catch( (error) => {
+        console.error('SHIPPING ERROR', error)
+      });
   }
 
   handleBilling(event) {
     event.preventDefault();
-    console.log('purchase');
+    let cardInfo = {
+      cardNumber: parseInt(event.target.cardNumber.value),
+      expDate: event.target.expDate.value,
+      cvv: parseInt(event.target.cvv.value),
+      zip: parseInt(event.target.billingZip.value),
+      user_id: this.state.currentUser
+    };
+    axios.post('/billing', cardInfo)
+      .then( (result) => {
+        return this.setState( (curState) => {
+          return {currentPage: 'checkout', currentUser: 0};
+        });
+      })
+      .catch( (error) => {
+        console.error('BILLING ERROR', error);
+      });
   }
 
   render() {
     return (
       <div>
-        {this.state.current === 'info' ?
+        {this.state.currentPage === 'info' ?
         <Info task={this.handleAccountCreation} /> :
-        this.state.current === 'shipping' ?
+        this.state.currentPage === 'shipping' ?
         <ShippingInfo task={this.handleShipping} /> :
-        this.state.current === 'billing' ?
+        this.state.currentPage === 'billing' ?
         <BillingInfo task={this.handleBilling} /> :
         <CheckOut task={this.handleCheckOut} />
         }

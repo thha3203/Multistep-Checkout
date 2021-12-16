@@ -51,6 +51,7 @@ CREATE TABLE billing (
   id INT AUTO_INCREMENT,
   card_number INT NOT NULL,
   expiry VARCHAR(5) NOT NULL,
+  cvv INT NOT NULL,
   zip INT NOT NULL,
   users_id INT NOT NULL,
   PRIMARY KEY(id),
